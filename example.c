@@ -78,6 +78,10 @@ int main(void)
 		// check if any pins are low, but were high previously
 		mask = 1;
 		reset_idle = 0;
+
+		/* DAN: we don't need to check all the pins, just the one
+		   that's connected to the belt. */
+#if 0
 		for (i=0; i<8; i++) {
 			if (((b & mask) == 0) && (b_prev & mask) != 0) {
 				usb_keyboard_press(KEY_B, KEY_SHIFT);
@@ -91,6 +95,23 @@ int main(void)
 			}
 			mask = mask << 1;
 		}
+#endif
+
+		/* DAN: for now, we just hardcode the password that we want
+		   the belt to write out when the button is pressed. */
+
+ 		if (((d & (mask << 5)) == 0) && (d_prev & (mask <<  5)) != 0) {
+			usb_keyboard_press(KEY_P, 0);
+			usb_keyboard_press(KEY_A, 0);
+			usb_keyboard_press(KEY_S, 0);
+			usb_keyboard_press(KEY_S, 0);
+			usb_keyboard_press(KEY_W, 0);
+			usb_keyboard_press(KEY_0, 0);
+			usb_keyboard_press(KEY_R, 0);
+			usb_keyboard_press(KEY_D, 0);
+			reset_idle = 1;
+		}
+
 		// if any keypresses were detected, reset the idle counter
 		if (reset_idle) {
 			// variables shared with interrupt routines must be
